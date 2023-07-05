@@ -1,16 +1,20 @@
 # chatnote
 
-A new Flutter project.
+Features:
 
-## Getting Started
+1. Online database.
+user can sign in/sign up create profile
 
-This project is a starting point for a Flutter application.
+2.share
+my note can be shared in social media the despriction part
 
-A few resources to get you started if this is your first Flutter project:
+3. collaborate
+like figma i want to collaborate with other user. Multiple people or 
+a team can have access to a single note
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+4. Beautiful ui
+UI have to be beautiful and system wide search option
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+5. To-do, image, drawing option
+
+6. notification and a good looking user profile
