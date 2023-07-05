@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "485922204753",
+    "project_id": "my-note-001",
+    "storage_bucket": "my-note-001.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485922204753:android:eb0b0fec8126c7625b9c70",
+        "android_client_info": {
+          "package_name": "com.example.chatnote"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485922204753-l0sepnho4ar2kkl087vkpn4ovr7jop93.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLX0XxsRwIyN9H-81UU_fu5we39_dSJGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485922204753-l0sepnho4ar2kkl087vkpn4ovr7jop93.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
