@@ -16,6 +16,7 @@ class AddNoteScreen extends StatelessWidget {
   final String? title;
   final String? description;
   final String? time;
+  final List<dynamic> serverimg;
 
   const AddNoteScreen({
     super.key,
@@ -24,6 +25,7 @@ class AddNoteScreen extends StatelessWidget {
     this.description,
     this.isupdate = false,
     this.time,
+    this.serverimg = const [],
   });
   @override
   Widget build(BuildContext context) {
@@ -166,14 +168,13 @@ class AddNoteScreen extends StatelessWidget {
                         Obx(() {
                           return Column(
                             children: [
-                              if (addnoteController.serverImage.isNotEmpty)
+                              if (serverimg.isNotEmpty)
                                 SizedBox(
                                   height: 200,
                                   width: double.infinity,
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount:
-                                        addnoteController.serverImage.length,
+                                    itemCount: serverimg.length,
                                     itemBuilder: (context, index) {
                                       return Padding(
                                         padding: EdgeInsets.all(6.w),
@@ -185,8 +186,7 @@ class AddNoteScreen extends StatelessWidget {
                                                   ));
                                             },
                                             child: Image.network(
-                                                addnoteController
-                                                    .serverImage[index])),
+                                                serverimg[index])),
                                       );
                                     },
                                   ),

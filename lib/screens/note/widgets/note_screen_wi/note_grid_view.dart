@@ -85,14 +85,15 @@ class NoteGridView extends StatelessWidget {
                           controller.selectedItemIndex.value = index;
                         },
                         onTap: () {
-                          addNoteController.serverImage.value =
-                              imageList; //save the image's from cloud firebase to show
-                          addNoteController.currentImageUrl
-                                  .value = // save the 0 image for deleting purpose in [ImageView]
-
-                              imageList[0];
+                          if (imageList.isNotEmpty) {
+                            addNoteController.serverImage.value =
+                                imageList; //save the image's from cloud firebase to show
+                            addNoteController.currentImageUrl.value = imageList[
+                                0]; // save the 0 image for deleting purpose in [ImageView]
+                          }
 
                           Get.to(() => AddNoteScreen(
+                                serverimg: imageList,
                                 docId: id,
                                 isupdate: true,
                                 title: title,
