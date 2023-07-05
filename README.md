@@ -5,7 +5,7 @@ Features:
 1. Online database.
 user can sign in/sign up create profile
 
-2.share my note can be shared in social media the despriction part
+  2.share my note can be shared in social media the despriction part
 
 3. collaborate
 like figma i want to collaborate with other user. Multiple people or 
