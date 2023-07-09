@@ -33,10 +33,9 @@ class _NoteState extends State<Note> {
     var noteController = Get.put(NoteController());
 
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      backgroundColor: homeBackground,
-      body: GetBuilder<NoteController>(builder: (controller) {
-        return Padding(
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        backgroundColor: homeBackground,
+        body: Padding(
             padding: EdgeInsets.only(top: 35.h, left: 10, right: 10),
             child: Column(children: [
               Row(
@@ -124,11 +123,11 @@ class _NoteState extends State<Note> {
                 height: 10.h,
               ),
               //
+              //Problem bello 2 screen
+              //
               const MyNoteBooks(),
               //
               const NoteGridView()
-            ]));
-      }),
-    );
+            ])));
   }
 }

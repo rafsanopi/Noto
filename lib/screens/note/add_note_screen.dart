@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatnote/Colors/colors.dart';
 import 'package:chatnote/root%20methods/back_button.dart';
 import 'package:chatnote/root%20methods/user_info.dart';
@@ -5,6 +6,7 @@ import 'package:chatnote/screens/note/controller/add_note_controller.dart';
 import 'package:chatnote/screens/note/widgets/add_note_wi/below_buttom_sheet.dart';
 import 'package:chatnote/screens/note/widgets/add_note_wi/image_view.dart';
 import 'package:chatnote/screens/note/widgets/add_note_wi/top_buttom_sheet.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,20 +14,22 @@ import 'package:get/get.dart';
 
 class AddNoteScreen extends StatelessWidget {
   final bool isupdate;
-  final String? docId;
-  final String? title;
-  final String? description;
-  final String? time;
-  final List<dynamic> serverimg;
+  final String docId;
+  final String title;
+  final String description;
+  final String time;
+  final bool hasImage;
+  final bool pin;
 
   const AddNoteScreen({
     super.key,
-    this.docId,
-    this.title,
-    this.description,
+    this.docId = "",
+    this.title = "",
+    this.description = "",
     this.isupdate = false,
-    this.time,
-    this.serverimg = const [],
+    this.time = "",
+    this.hasImage = false,
+    this.pin = false,
   });
   @override
   Widget build(BuildContext context) {
@@ -98,7 +102,11 @@ class AddNoteScreen extends StatelessWidget {
                       //
                       GestureDetector(
                         onTap: () {
-                          controller.saveOrUpdateNote(isUpdate: isupdate);
+                          controller.saveOrUpdateNote(
+                              isUpdate: isupdate,
+                              docID: docId,
+                              hasImage: hasImage,
+                              pin: pin);
                           controller.clearNote();
                         },
                         child: Container(
@@ -168,33 +176,75 @@ class AddNoteScreen extends StatelessWidget {
                         Obx(() {
                           return Column(
                             children: [
-                              if (serverimg.isNotEmpty)
+                              if (hasImage) // if server img is not empty this widget tree will be shown
                                 SizedBox(
-                                  height: 200,
-                                  width: double.infinity,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: serverimg.length,
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: EdgeInsets.all(6.w),
-                                        child: InkWell(
-                                            onTap: () {
-                                              Get.to(() => ImageView(
-                                                    isServerImage: true,
-                                                    docId: docId,
-                                                  ));
+                                    height: 200,
+                                    width: double.infinity,
+                                    child: StreamBuilder(
+                                        stream: FirebaseFirestore.instance
+                                            .collection("user")
+                                            .doc(Uf.email)
+                                            .collection("userNotes")
+                                            .doc(docId)
+                                            .collection("image")
+                                            .snapshots(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          }
+                                          if (snapshot.hasError ||
+                                              snapshot.data == null) {
+                                            return const Center(
+                                              child:
+                                                  Text("Something went wrong"),
+                                            );
+                                          }
+
+                                          if (!snapshot.hasData) {
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          }
+
+                                          var data = snapshot.data!.docs;
+                                          return ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: data.length,
+                                            itemBuilder: (context, index) {
+                                              return Padding(
+                                                padding: EdgeInsets.all(6.w),
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Get.to(() => ImageView(
+                                                          isServerImage: true,
+                                                          docId: docId,
+                                                        ));
+                                                  },
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: data[index]
+                                                        ["url"],
+                                                    placeholder:
+                                                        (context, url) =>
+                                                            const FlutterLogo(),
+                                                    errorWidget: (context, url,
+                                                            error) =>
+                                                        const Icon(Icons.error),
+                                                  ),
+                                                ),
+                                              );
                                             },
-                                            child: Image.network(
-                                                serverimg[index])),
-                                      );
-                                    },
-                                  ),
-                                ),
+                                          );
+                                        })),
                               //
                               //
                               //
-                              if (addnoteController.images.isNotEmpty)
+                              if (addnoteController.images
+                                  .isNotEmpty) // if local image file is not empty this widget tree will be shown
                                 SizedBox(
                                   height: 200,
                                   width: double.infinity,
@@ -224,6 +274,7 @@ class AddNoteScreen extends StatelessWidget {
                           );
                         }),
                         TextFormField(
+                          //title controller
                           controller: isupdate
                               ? addnoteController.titleTexteditingController
                                   .value = TextEditingController(text: title)
@@ -241,11 +292,11 @@ class AddNoteScreen extends StatelessWidget {
                               border: InputBorder.none),
                         ),
                         TextFormField(
+                          //description controller
                           controller: isupdate
                               ? addnoteController
                                       .descriptionTexteditingController.value =
-                                  TextEditingController(
-                                      text: "$description \n\n\n$time")
+                                  TextEditingController(text: description)
                               : addnoteController
                                   .descriptionTexteditingController.value,
                           minLines: null,
@@ -290,6 +341,11 @@ class AddNoteScreen extends StatelessWidget {
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(30),
                               child: Image.network(Uf.proPic))),
+
+                      Text(
+                        time,
+                        style: TextStyle(fontSize: 8.sp),
+                      ),
                       //
                       //More Button
                       //

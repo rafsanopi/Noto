@@ -1,11 +1,10 @@
 import 'dart:io';
 import 'package:chatnote/root%20methods/snakbar_msg.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import '../../../root methods/user_info.dart';
 
@@ -15,23 +14,7 @@ class AddNoteController extends GetxController {
   RxString notebookName = "All notes".obs;
   Rx<XFile?> pickedImage = Rx<XFile?>(null);
   RxList images = [].obs;
-  RxList serverImage = [].obs;
-
-  RxInt onPageImageIndex = 1.obs;
-  RxString currentImageUrl = "".obs;
-  RxInt currentImageIndex = 0.obs;
-
-  getImageFilesFromNetwork(List<dynamic> imageUrls) async {
-    for (var i = 0; i < imageUrls.length; i++) {
-      var imageUrl = imageUrls[i];
-      var response = await http.get(Uri.parse(imageUrl));
-      var dir = await getTemporaryDirectory();
-      var file = File('${dir.path}/temp_$i.jpg');
-      await file.writeAsBytes(response.bodyBytes);
-      images.add(file);
-      print(images);
-    }
-  }
+  RxInt onPageImageIndex = 0.obs;
 
   int getImageIndex(int index) {
     return onPageImageIndex.value = index;
@@ -44,19 +27,27 @@ class AddNoteController extends GetxController {
     navigator!.pop();
   }
 
-  saveOrUpdateNote({required bool isUpdate}) async {
+  saveOrUpdateNote(
+      {required bool isUpdate,
+      String? docID,
+      bool? pin,
+      bool? hasImage}) async {
     late String docId;
-
+    final storageRef = FirebaseStorage.instance
+        .ref(); // saving the image to firebasestorage then getting the download url and image name then again save those information to cloud firebase
+    List<String> downloadUrls = [];
+    List<String> imageNames = [];
     if (isUpdate == false) {
       try {
         await Uf.doc.collection("userNotes").add({
+          // Save Data to cloud firebase if its not updating
           "deleted": false,
           "notebook_name": ["All notes", notebookName.value],
           "pin": false,
           "share": false,
           "share_member_gmail": [],
           "reminder": "None",
-          "img": [],
+          "img": false,
           "title": titleTexteditingController.value.text == ""
               ? "No title"
               : titleTexteditingController.value.text,
@@ -67,11 +58,9 @@ class AddNoteController extends GetxController {
           docId = docRef.id;
         });
 
-        final storageRef = FirebaseStorage.instance.ref();
-        List<String> downloadUrls = [];
-
         for (var imageFile in images) {
           final imageName = DateTime.now().millisecondsSinceEpoch.toString();
+          imageNames.add(imageName);
           final imagesRef = storageRef
               .child("noteImg")
               .child(Uf.email)
@@ -82,16 +71,87 @@ class AddNoteController extends GetxController {
           downloadUrls.add(downloadUrl);
         }
 
-        await Uf.doc.collection("userNotes").doc(docId).update({
-          "img": downloadUrls,
-        });
+        for (var i = 0; i < downloadUrls.length; i++) {
+          var url = downloadUrls[i];
+          var imageName = imageNames[
+              i]; // Assuming the imageNames list contains the corresponding image names
+
+          await Uf.doc
+              .collection("userNotes")
+              .doc(docId)
+              .collection("image")
+              .add({
+            "url": url,
+            "imageName": "$imageName.jpg",
+          });
+          await Uf.doc.collection("userNotes").doc(docId).update({
+            "img": true,
+          });
+        }
+        navigator!.pop();
       } on FirebaseException catch (msg) {
         GetSnakbarMsg.somethingWentWrong(msg: msg.message.toString());
       }
-    } else {}
+    } else if (isUpdate == true) {
+      try {
+        await Uf.doc.collection("userNotes").doc(docID).update({
+          // Save Data to cloud firebase if its not updating
+          // "deleted": false,
+          "pin": pin,
+          //"share": false,
+          //"share_member_gmail": [],
+          // "reminder": "None",
+          "img": hasImage,
+          "title": titleTexteditingController.value.text == ""
+              ? "No title"
+              : titleTexteditingController.value.text,
+          "description": descriptionTexteditingController.value.text,
+          "createdTime":
+              "edited ${DateFormat('hh:mm aaa yyyy MMMM dd').format(DateTime.now())}",
+        });
+
+        //Update Image's now
+        if (images.isNotEmpty) {
+          for (var imageFile in images) {
+            final imageName = DateTime.now().millisecondsSinceEpoch.toString();
+            imageNames.add(imageName);
+            final imagesRef = storageRef
+                .child("noteImg")
+                .child(Uf.email)
+                .child(docID!)
+                .child("$imageName.jpg");
+            await imagesRef.putFile(imageFile);
+            final downloadUrl = await imagesRef.getDownloadURL();
+            downloadUrls.add(downloadUrl);
+          }
+
+          for (var i = 0; i < downloadUrls.length; i++) {
+            var url = downloadUrls[i];
+            var imageName = imageNames[
+                i]; // Assuming the imageNames list contains the corresponding image names
+
+            await Uf.doc
+                .collection("userNotes")
+                .doc(docID!)
+                .collection("image")
+                .add({
+              "url": url,
+              "imageName": "$imageName.jpg",
+            });
+            await Uf.doc.collection("userNotes").doc(docID).update({
+              "img": true,
+            });
+          }
+        }
+
+        navigator!.pop();
+      } on FirebaseException catch (msg) {
+        GetSnakbarMsg.somethingWentWrong(msg: msg.message.toString());
+      }
+    }
 
     images.value = [];
-    navigator!.pop();
+    //
   }
 
   clearNote() {

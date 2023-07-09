@@ -36,7 +36,9 @@ class _NavBarState extends State<NavBar> {
               backgroundColor: Colors.white,
               onPressed: () {
                 if (_selectedIndex == 0) {
-                  Get.to(() => const AddNoteScreen());
+                  Get.to(() => const AddNoteScreen(
+                        isupdate: false,
+                      ));
                 }
               },
               child: const Icon(

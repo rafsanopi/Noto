@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatnote/screens/note/add_note_screen.dart';
 import 'package:chatnote/screens/note/controller/note_gridview_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -41,9 +42,11 @@ class NoteGridView extends StatelessWidget {
                 .collection("user")
                 .doc(Uf.email)
                 .collection("userNotes")
-                .where("notebook_name", arrayContainsAny: {
-              addNoteController.notebookName.value
-            }).snapshots(),
+                .where("notebook_name",
+                    arrayContainsAny: {addNoteController.notebookName.value})
+                .orderBy('pin', descending: true)
+                .orderBy("createdTime", descending: true)
+                .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
@@ -70,7 +73,9 @@ class NoteGridView extends StatelessWidget {
                 itemBuilder: (context, index) {
                   var height = getMinHeight(index);
                   String id = data[index].id;
-                  List<dynamic> imageList = data[index]["img"];
+                  bool hasImage = data[index]["img"];
+                  bool pin = data[index]["pin"];
+
                   String title = data[index]["title"];
                   String description = data[index]["description"];
                   String time = data[index]["createdTime"];
@@ -85,15 +90,10 @@ class NoteGridView extends StatelessWidget {
                           controller.selectedItemIndex.value = index;
                         },
                         onTap: () {
-                          if (imageList.isNotEmpty) {
-                            addNoteController.serverImage.value =
-                                imageList; //save the image's from cloud firebase to show
-                            addNoteController.currentImageUrl.value = imageList[
-                                0]; // save the 0 image for deleting purpose in [ImageView]
-                          }
-
                           Get.to(() => AddNoteScreen(
-                                serverimg: imageList,
+                                // serverimg: imageList,
+                                pin: pin,
+                                hasImage: hasImage,
                                 docId: id,
                                 isupdate: true,
                                 title: title,
@@ -123,21 +123,68 @@ class NoteGridView extends StatelessWidget {
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    if (imageList.isNotEmpty)
+                                    if (hasImage)
                                       SizedBox(
                                           height: 90.h,
                                           width: double.infinity,
-                                          child: ListView.builder(
-                                            scrollDirection: Axis.horizontal,
-                                            itemCount: imageList.length,
-                                            itemBuilder: (context, index) {
-                                              return Image.network(
-                                                imageList[index],
-                                                fit: BoxFit.cover,
-                                              );
-                                            },
-                                          )),
-                                    if (imageList.isNotEmpty)
+                                          child: StreamBuilder(
+                                              stream: FirebaseFirestore.instance
+                                                  .collection("user")
+                                                  .doc(Uf.email)
+                                                  .collection("userNotes")
+                                                  .doc(id)
+                                                  .collection("image")
+                                                  .snapshots(),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  return const Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  );
+                                                }
+                                                if (snapshot.hasError ||
+                                                    snapshot.data == null) {
+                                                  return const Center(
+                                                    child: Text(
+                                                        "Something went wrong"),
+                                                  );
+                                                }
+
+                                                if (!snapshot.hasData) {
+                                                  return const Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  );
+                                                }
+
+                                                var data = snapshot.data!.docs;
+                                                return ListView.builder(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  itemCount: data.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 6.w),
+                                                      child: CachedNetworkImage(
+                                                        imageUrl: data[index]
+                                                            ["url"],
+                                                        placeholder: (context,
+                                                                url) =>
+                                                            const FlutterLogo(),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            const Icon(
+                                                                Icons.error),
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              })),
+                                    if (hasImage)
                                       SizedBox(
                                         height: 5.h,
                                       ),
@@ -171,9 +218,8 @@ class NoteGridView extends StatelessWidget {
                                         height: double.infinity,
                                         child: Text(
                                           description,
-                                          maxLines: imageList.isNotEmpty
-                                              ? 3
-                                              : height ~/ 16.h,
+                                          maxLines:
+                                              hasImage ? 3 : height ~/ 16.h,
                                           style: TextStyle(
                                               fontSize: 12.sp,
                                               fontWeight: FontWeight.w400,
