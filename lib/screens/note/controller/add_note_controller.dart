@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import '../../../root methods/user_info.dart';
+import '../../../root methods/global.dart';
 
 class AddNoteController extends GetxController {
   var titleTexteditingController = TextEditingController().obs;
@@ -39,7 +39,7 @@ class AddNoteController extends GetxController {
     List<String> imageNames = [];
     if (isUpdate == false) {
       try {
-        await Uf.doc.collection("userNotes").add({
+        await Global.doc.collection("userNotes").add({
           // Save Data to cloud firebase if its not updating
           "deleted": false,
           "notebook_name": ["All notes", notebookName.value],
@@ -63,7 +63,7 @@ class AddNoteController extends GetxController {
           imageNames.add(imageName);
           final imagesRef = storageRef
               .child("noteImg")
-              .child(Uf.email)
+              .child(Global.email)
               .child(docId)
               .child("$imageName.jpg");
           await imagesRef.putFile(imageFile);
@@ -76,7 +76,7 @@ class AddNoteController extends GetxController {
           var imageName = imageNames[
               i]; // Assuming the imageNames list contains the corresponding image names
 
-          await Uf.doc
+          await Global.doc
               .collection("userNotes")
               .doc(docId)
               .collection("image")
@@ -84,7 +84,7 @@ class AddNoteController extends GetxController {
             "url": url,
             "imageName": "$imageName.jpg",
           });
-          await Uf.doc.collection("userNotes").doc(docId).update({
+          await Global.doc.collection("userNotes").doc(docId).update({
             "img": true,
           });
         }
@@ -94,7 +94,7 @@ class AddNoteController extends GetxController {
       }
     } else if (isUpdate == true) {
       try {
-        await Uf.doc.collection("userNotes").doc(docID).update({
+        await Global.doc.collection("userNotes").doc(docID).update({
           // Save Data to cloud firebase if its not updating
           // "deleted": false,
           "pin": pin,
@@ -117,7 +117,7 @@ class AddNoteController extends GetxController {
             imageNames.add(imageName);
             final imagesRef = storageRef
                 .child("noteImg")
-                .child(Uf.email)
+                .child(Global.email)
                 .child(docID!)
                 .child("$imageName.jpg");
             await imagesRef.putFile(imageFile);
@@ -130,7 +130,7 @@ class AddNoteController extends GetxController {
             var imageName = imageNames[
                 i]; // Assuming the imageNames list contains the corresponding image names
 
-            await Uf.doc
+            await Global.doc
                 .collection("userNotes")
                 .doc(docID!)
                 .collection("image")
@@ -138,7 +138,7 @@ class AddNoteController extends GetxController {
               "url": url,
               "imageName": "$imageName.jpg",
             });
-            await Uf.doc.collection("userNotes").doc(docID).update({
+            await Global.doc.collection("userNotes").doc(docID).update({
               "img": true,
             });
           }

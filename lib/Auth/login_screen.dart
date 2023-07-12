@@ -17,7 +17,7 @@ double left = 30.w;
 //double top = 0.0;
 
 class _LogInScreenState extends State<LogInScreen> {
-  var logIncontroller = Get.put(LogInController());
+  // var logIncontroller = Get.find<LogInController>();
 
   @override
   Widget build(BuildContext context) {

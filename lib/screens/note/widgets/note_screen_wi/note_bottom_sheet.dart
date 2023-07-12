@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../Colors/colors.dart';
-import '../../../../root methods/user_info.dart';
+import '../../../../root methods/global.dart';
 import 'nb_name_popup.dart';
 
 class NoteBottomSheet extends StatelessWidget {
@@ -140,7 +140,7 @@ class NoteBottomSheet extends StatelessWidget {
               child: StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection("user")
-                .doc(Uf.email)
+                .doc(Global.email)
                 .collection("notebooks")
                 .orderBy("name", descending: true)
                 .snapshots(),

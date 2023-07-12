@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatnote/Colors/colors.dart';
 import 'package:chatnote/root%20methods/back_button.dart';
-import 'package:chatnote/root%20methods/user_info.dart';
+import 'package:chatnote/root%20methods/global.dart';
 import 'package:chatnote/screens/note/controller/add_note_controller.dart';
 import 'package:chatnote/screens/note/widgets/add_note_wi/below_buttom_sheet.dart';
 import 'package:chatnote/screens/note/widgets/add_note_wi/image_view.dart';
@@ -183,7 +183,7 @@ class AddNoteScreen extends StatelessWidget {
                                     child: StreamBuilder(
                                         stream: FirebaseFirestore.instance
                                             .collection("user")
-                                            .doc(Uf.email)
+                                            .doc(Global.email)
                                             .collection("userNotes")
                                             .doc(docId)
                                             .collection("image")
@@ -340,7 +340,7 @@ class AddNoteScreen extends StatelessWidget {
                               ]),
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(30),
-                              child: Image.network(Uf.proPic))),
+                              child: Image.network(Global.proPic))),
 
                       Text(
                         time,

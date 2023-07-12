@@ -1,37 +1,20 @@
 import 'package:chatnote/Colors/colors.dart';
 import 'package:chatnote/screens/note/controller/note_controller.dart';
 import 'package:chatnote/screens/note/widgets/note_screen_wi/note_grid_view.dart';
+
 import 'package:chatnote/screens/note/widgets/note_screen_wi/notebooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
-import '../../root methods/user_info.dart';
+import '../../root methods/global.dart';
 
-class Note extends StatefulWidget {
+class Note extends GetView<NoteController> {
   const Note({super.key});
 
   @override
-  State<Note> createState() => _NoteState();
-}
-
-class _NoteState extends State<Note> {
-  // var noteController = Get.put(NoteController());
-  // var addNoteController = Get.put(AddNoteController());
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      Uf.currentUserInfo();
-      // noteController.getNoteBooks();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var noteController = Get.put(NoteController());
-
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         backgroundColor: homeBackground,
@@ -55,7 +38,7 @@ class _NoteState extends State<Note> {
                     width: 60.w,
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(50),
-                        child: Image.network(Uf.proPic)),
+                        child: Image.network(Global.proPic)),
                   ),
                   GestureDetector(
                     onTap: () {},
@@ -96,21 +79,21 @@ class _NoteState extends State<Note> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      "Good\n${noteController.timeOfDay}",
+                      "Good\n${controller.timeOfDay}",
                       style: TextStyle(
                           fontSize: 40.sp,
                           color: txtColor,
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      "Today's ${noteController.dayOfWeek}",
+                      "Today's ${controller.dayOfWeek}",
                       style: TextStyle(
                           fontSize: 15.sp,
                           color: txtColor,
                           fontWeight: FontWeight.w400),
                     ),
                     Text(
-                      "${noteController.todaysDate}",
+                      "${controller.todaysDate}",
                       style: TextStyle(
                           fontSize: 15.sp,
                           color: txtColor,
@@ -127,7 +110,7 @@ class _NoteState extends State<Note> {
               //
               const MyNoteBooks(),
               //
-              const NoteGridView()
+              //const NoteGridView()
             ])));
   }
 }

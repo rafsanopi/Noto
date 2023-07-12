@@ -1,5 +1,5 @@
 import 'package:chatnote/Colors/colors.dart';
-import 'package:chatnote/root%20methods/user_info.dart';
+import 'package:chatnote/root%20methods/global.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -22,7 +22,7 @@ class TopButtonBottomSheet extends StatelessWidget {
           MyContainerWithIconTxt(
               icon: "asset/other_img/trash.svg",
               ontap: () {
-                Uf.doc.collection("userNotes").doc(docId).delete();
+                Global.doc.collection("userNotes").doc(docId).delete();
                 navigator!.pop();
                 navigator!.pop();
               },

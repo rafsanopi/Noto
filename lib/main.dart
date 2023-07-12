@@ -1,5 +1,6 @@
 import 'package:chatnote/Auth/login_screen.dart';
 import 'package:chatnote/nav_bar.dart';
+import 'package:chatnote/root%20methods/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,6 +27,7 @@ void main() async {
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runApp(const MyApp());
+  Global.init();
 }
 
 //sdsdsdsd

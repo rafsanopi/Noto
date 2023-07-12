@@ -1,4 +1,4 @@
-import 'package:chatnote/root%20methods/user_info.dart';
+import 'package:chatnote/root%20methods/global.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -71,7 +71,7 @@ class NoteBookName extends StatelessWidget {
             CupertinoDialogAction(
               onPressed: () async {
                 try {
-                  await Uf.doc.collection("notebooks").doc(id).update(
+                  await Global.doc.collection("notebooks").doc(id).update(
                       {"name": controller.noteBookNameController.value.text});
                 } finally {
                   noteController.noteBookNameController.value.clear();
@@ -86,7 +86,7 @@ class NoteBookName extends StatelessWidget {
             CupertinoDialogAction(
               onPressed: () async {
                 try {
-                  await Uf.doc.collection("notebooks").doc(id).delete();
+                  await Global.doc.collection("notebooks").doc(id).delete();
                   controller.deleteDocumentWithValue(notebookName);
                 } finally {
                   noteController.noteBookNameController.value.clear();

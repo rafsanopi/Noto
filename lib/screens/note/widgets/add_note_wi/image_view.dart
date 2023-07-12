@@ -9,7 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-import '../../../../root methods/user_info.dart';
+import '../../../../root methods/global.dart';
 import '../../controller/add_note_controller.dart';
 
 class ImageView extends StatefulWidget {
@@ -34,7 +34,7 @@ class _ImageViewState extends State<ImageView> {
     int newIndex;
     var imageCollection = FirebaseFirestore.instance
         .collection("user")
-        .doc(Uf.email)
+        .doc(Global.email)
         .collection("userNotes")
         .doc(widget.docId)
         .collection("image");
@@ -131,7 +131,7 @@ class _ImageViewState extends State<ImageView> {
                                                     //if index get 0 img input from main doc will be false to hide image
                                                     FirebaseFirestore.instance
                                                         .collection("user")
-                                                        .doc(Uf.email)
+                                                        .doc(Global.email)
                                                         .collection("userNotes")
                                                         .doc(widget.docId)
                                                         .update({"img": false});
@@ -153,7 +153,7 @@ class _ImageViewState extends State<ImageView> {
                                                         .ref();
                                                     ref
                                                         .child("noteImg")
-                                                        .child(Uf.email)
+                                                        .child(Global.email)
                                                         .child(widget.docId)
                                                         .child(data[index]
                                                             ["imageName"])

@@ -1,5 +1,5 @@
 import 'package:chatnote/root%20methods/snakbar_msg.dart';
-import 'package:chatnote/root%20methods/user_info.dart';
+import 'package:chatnote/root%20methods/global.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
@@ -14,18 +14,18 @@ class NoteGridViewController extends GetxController {
 
   deleteNote({required String id}) {
     try {
-      Uf.doc.collection("userNotes").doc(id).delete();
+      Global.doc.collection("userNotes").doc(id).delete();
     } on FirebaseException catch (error) {
       GetSnakbarMsg.somethingWentWrong(msg: error.message.toString());
     }
   }
 
   updatePin({required String id}) async {
-    var qn = await Uf.doc.collection("userNotes").doc(id).get();
+    var qn = await Global.doc.collection("userNotes").doc(id).get();
     bool output = qn["pin"];
 
     try {
-      Uf.doc.collection("userNotes").doc(id).update({
+      Global.doc.collection("userNotes").doc(id).update({
         "pin": output = !output,
       });
     } on FirebaseException catch (error) {

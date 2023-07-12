@@ -1,6 +1,6 @@
 import 'package:chatnote/Colors/colors.dart';
 import 'package:chatnote/root%20methods/snakbar_msg.dart';
-import 'package:chatnote/root%20methods/user_info.dart';
+import 'package:chatnote/root%20methods/global.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -43,17 +43,20 @@ class LogInController extends GetxController {
   }
 
   void saveUserInfoOnLogIn() {
-    Uf.currentUserInfo();
-    var doc = FirebaseFirestore.instance.collection("user").doc(Uf.email);
+    Global.userInfo();
+    var doc = FirebaseFirestore.instance.collection("user").doc(Global.email);
     try {
-      doc
-          .collection("userInfo")
-          .doc(Uf.email)
-          .set({"name": Uf.username, "piclink": Uf.proPic, "email": Uf.email});
+      doc.collection("userInfo").doc(Global.email).set({
+        "name": Global.username,
+        "piclink": Global.proPic,
+        "email": Global.email
+      });
       // ignore: empty_catches
     } on FirebaseException catch (error) {
       GetSnakbarMsg.somethingWentWrong(msg: error.message!);
     } finally {
+      Get.put(UserController());
+
       Get.off(() => const NavBar());
     }
   }

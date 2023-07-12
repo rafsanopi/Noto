@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../../root methods/snakbar_msg.dart';
-import '../../../root methods/user_info.dart';
+import '../../../root methods/global.dart';
 
 class NoteController extends GetxController {
+  var userController = Get.find<UserController>();
+
   RxInt currentIndex = 0.obs;
 
   RxBool isRotated = false.obs;
@@ -17,6 +19,8 @@ class NoteController extends GetxController {
   RxString timeOfDay = "".obs;
   RxString dayOfWeek = DateFormat('EEEE').format(DateTime.now()).obs;
   RxString todaysDate = DateFormat.yMMMMd().format(DateTime.now()).obs;
+
+  RxBool isLoading = true.obs;
 
   timeStatus() {
     dayOfWeek;
@@ -36,18 +40,23 @@ class NoteController extends GetxController {
   }
 
   getNoteBooks() async {
-    noteBookItems.value = ["All notes"];
-    QuerySnapshot qn = await Uf.doc.collection("notebooks").get();
-    for (int i = 0; i < qn.docs.length; i++) {
-      noteBookItems.add(qn.docs[i]["name"]);
-    }
+    // try {
+    //   QuerySnapshot qn =
+    //       await userController.doc.value.collection("notebooks").get();
+    //   for (int i = 0; i < qn.docs.length; i++) {
+    //     noteBookItems.add(qn.docs[i]["name"]);
+    //   }
 
-    return qn.docs;
+    //   isLoading.value = false;
+    // } on Exception catch (e) {
+    //   isLoading.value = true;
+    // }
+    print(userController.doc.value.id);
   }
 
   saveNotebooksName() async {
     try {
-      await Uf.doc
+      await Global.doc
           .collection("notebooks")
           .doc(noteBookNameController.value.text)
           .set({
@@ -80,7 +89,7 @@ class NoteController extends GetxController {
     // Get a reference to the Firestore collection
 
     // Query documents where the field array contains the specified value
-    final QuerySnapshot snapshot = await Uf.doc
+    final QuerySnapshot snapshot = await Global.doc
         .collection("userNotes")
         .where('notebook_name', arrayContainsAny: [value]).get();
 
@@ -91,9 +100,17 @@ class NoteController extends GetxController {
   }
 
   @override
+  void onReady() {
+    getNoteBooks();
+
+    super.onReady();
+  }
+
+  @override
   void onInit() {
     timeStatus();
-    getNoteBooks();
+    Global.userInfo();
+    // getNoteBooks();
     super.onInit();
   }
 }
