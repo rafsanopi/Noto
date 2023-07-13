@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
 import '../../../../Colors/colors.dart';
 import '../../../../root methods/global.dart';
@@ -13,6 +14,8 @@ class NoteBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var userController = Get.find<UserController>();
+
     return Container(
       padding: EdgeInsets.all(10.w),
       decoration: const BoxDecoration(color: primaryColor),
@@ -140,7 +143,7 @@ class NoteBottomSheet extends StatelessWidget {
               child: StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection("user")
-                .doc(Global.email)
+                .doc(userController.email.value)
                 .collection("notebooks")
                 .orderBy("name", descending: true)
                 .snapshots(),

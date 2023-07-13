@@ -1,7 +1,6 @@
 import 'package:chatnote/Colors/colors.dart';
 import 'package:chatnote/screens/note/controller/note_controller.dart';
 import 'package:chatnote/screens/note/widgets/note_screen_wi/note_grid_view.dart';
-
 import 'package:chatnote/screens/note/widgets/note_screen_wi/notebooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,6 +14,8 @@ class Note extends GetView<NoteController> {
 
   @override
   Widget build(BuildContext context) {
+    var userController = Get.find<UserController>();
+
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         backgroundColor: homeBackground,
@@ -38,7 +39,7 @@ class Note extends GetView<NoteController> {
                     width: 60.w,
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(50),
-                        child: Image.network(Global.proPic)),
+                        child: Image.network(userController.proPic.value)),
                   ),
                   GestureDetector(
                     onTap: () {},

@@ -27,14 +27,15 @@ class ImageView extends StatefulWidget {
 }
 
 class _ImageViewState extends State<ImageView> {
-  var addnoteController = Get.put(AddNoteController());
+  var addnoteController = Get.find<AddNoteController>();
+  var userController = Get.find<UserController>();
 
   @override
   Widget build(BuildContext context) {
     int newIndex;
     var imageCollection = FirebaseFirestore.instance
         .collection("user")
-        .doc(Global.email)
+        .doc(userController.email.value)
         .collection("userNotes")
         .doc(widget.docId)
         .collection("image");
@@ -131,7 +132,8 @@ class _ImageViewState extends State<ImageView> {
                                                     //if index get 0 img input from main doc will be false to hide image
                                                     FirebaseFirestore.instance
                                                         .collection("user")
-                                                        .doc(Global.email)
+                                                        .doc(userController
+                                                            .email.value)
                                                         .collection("userNotes")
                                                         .doc(widget.docId)
                                                         .update({"img": false});
@@ -153,7 +155,8 @@ class _ImageViewState extends State<ImageView> {
                                                         .ref();
                                                     ref
                                                         .child("noteImg")
-                                                        .child(Global.email)
+                                                        .child(userController
+                                                            .email.value)
                                                         .child(widget.docId)
                                                         .child(data[index]
                                                             ["imageName"])

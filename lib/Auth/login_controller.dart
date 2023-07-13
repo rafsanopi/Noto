@@ -41,23 +41,4 @@ class LogInController extends GetxController {
     }
     return login.value;
   }
-
-  void saveUserInfoOnLogIn() {
-    Global.userInfo();
-    var doc = FirebaseFirestore.instance.collection("user").doc(Global.email);
-    try {
-      doc.collection("userInfo").doc(Global.email).set({
-        "name": Global.username,
-        "piclink": Global.proPic,
-        "email": Global.email
-      });
-      // ignore: empty_catches
-    } on FirebaseException catch (error) {
-      GetSnakbarMsg.somethingWentWrong(msg: error.message!);
-    } finally {
-      Get.put(UserController());
-
-      Get.off(() => const NavBar());
-    }
-  }
 }

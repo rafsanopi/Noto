@@ -21,11 +21,19 @@ class UserController extends GetxController {
       username.value = user!.displayName!;
       email.value = user.email!;
       proPic.value = user.photoURL!;
+
       doc.value =
           FirebaseFirestore.instance.collection("user").doc(email.value);
     } catch (e) {
       print("Error: $e");
     }
+  }
+
+  @override
+  void onReady() {
+    userInfo();
+
+    super.onReady();
   }
 
   @override
@@ -36,45 +44,14 @@ class UserController extends GetxController {
 }
 
 class Global {
-  static String username = "";
-  static String email = "";
-  static String proPic = "";
-
-  static void userInfo() async {
-    var user = FirebaseAuth.instance.currentUser;
-
-    try {
-      username = user!.displayName!;
-      email = user.email!;
-      proPic = user.photoURL!;
-      // // print("email is: $email");
-      // var firebase = await FirebaseFirestore.instance
-      //     .collection("user")
-      //     .doc(user.email)
-      //     .collection("userInfo")
-      //     .doc(user.email)
-      //     .get();
-      // email = firebase.data()?["email"];
-    } on Exception catch (e) {
-      print("Error is: $e");
-    }
-
-    //  print("Email is: $proPic");
-  }
-
   static init() {
     //Note screen controller's
     Get.lazyPut(() => NoteController(), fenix: true);
     Get.lazyPut(() => AddNoteController(), fenix: true);
     Get.lazyPut(() => NoteGridViewController(), fenix: true);
     //login Screen
-    Get.lazyPut(
-      () => LogInController(),
-    );
+    Get.lazyPut(() => LogInController(), fenix: false);
     //
     Get.lazyPut(() => UserController(), fenix: true);
   }
-
-  static DocumentReference<Map<String, dynamic>> doc =
-      FirebaseFirestore.instance.collection("user").doc(email);
 }

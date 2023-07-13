@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 class NoteGridViewController extends GetxController {
   RxBool onLongPress = false.obs;
   RxInt selectedItemIndex = 0.obs;
+  var userController = Get.find<UserController>();
 
   longPressUpdate(bool value) {
     onLongPress.value = value;
@@ -14,18 +15,19 @@ class NoteGridViewController extends GetxController {
 
   deleteNote({required String id}) {
     try {
-      Global.doc.collection("userNotes").doc(id).delete();
+      userController.doc.value.collection("userNotes").doc(id).delete();
     } on FirebaseException catch (error) {
       GetSnakbarMsg.somethingWentWrong(msg: error.message.toString());
     }
   }
 
   updatePin({required String id}) async {
-    var qn = await Global.doc.collection("userNotes").doc(id).get();
+    var qn =
+        await userController.doc.value.collection("userNotes").doc(id).get();
     bool output = qn["pin"];
 
     try {
-      Global.doc.collection("userNotes").doc(id).update({
+      userController.doc.value.collection("userNotes").doc(id).update({
         "pin": output = !output,
       });
     } on FirebaseException catch (error) {

@@ -33,11 +33,12 @@ class NoteGridView extends GetView<NoteGridViewController> {
   @override
   Widget build(BuildContext context) {
     var addNoteController = Get.find<AddNoteController>();
+    var userController = Get.find<UserController>();
 
     return Expanded(
       child: Obx(() {
         return StreamBuilder(
-            stream: Global.doc
+            stream: userController.doc.value
                 .collection("userNotes")
                 .where("notebook_name",
                     arrayContainsAny: {addNoteController.notebookName.value})
@@ -127,7 +128,8 @@ class NoteGridView extends GetView<NoteGridViewController> {
                                                 stream: FirebaseFirestore
                                                     .instance
                                                     .collection("user")
-                                                    .doc(Global.email)
+                                                    .doc(userController
+                                                        .email.value)
                                                     .collection("userNotes")
                                                     .doc(id)
                                                     .collection("image")
@@ -253,7 +255,8 @@ class NoteGridView extends GetView<NoteGridViewController> {
                                                   borderRadius:
                                                       BorderRadius.circular(30),
                                                   child: Image.network(
-                                                      Global.proPic))),
+                                                      userController
+                                                          .proPic.value))),
                                           SizedBox(
                                             height: 20.h,
                                             width: 40.w,

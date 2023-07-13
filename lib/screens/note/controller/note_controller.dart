@@ -15,7 +15,7 @@ class NoteController extends GetxController {
   Rx<TextEditingController> noteBookNameController =
       TextEditingController().obs;
 
-  RxList<String> noteBookItems = ["All notes"].obs;
+  RxList noteBookItems = [].obs;
   RxString timeOfDay = "".obs;
   RxString dayOfWeek = DateFormat('EEEE').format(DateTime.now()).obs;
   RxString todaysDate = DateFormat.yMMMMd().format(DateTime.now()).obs;
@@ -40,23 +40,26 @@ class NoteController extends GetxController {
   }
 
   getNoteBooks() async {
-    // try {
-    //   QuerySnapshot qn =
-    //       await userController.doc.value.collection("notebooks").get();
-    //   for (int i = 0; i < qn.docs.length; i++) {
-    //     noteBookItems.add(qn.docs[i]["name"]);
-    //   }
+    QuerySnapshot qn =
+        await userController.doc.value.collection("notebooks").get();
+    noteBookItems.value =
+        []; // empty the list when some notebook gets deletes and show value from start
+    try {
+      noteBookItems.add("All notes");
+      for (int i = 0; i < qn.docs.length; i++) {
+        noteBookItems.add(qn.docs[i]["name"]);
+        print(noteBookItems);
+      }
 
-    //   isLoading.value = false;
-    // } on Exception catch (e) {
-    //   isLoading.value = true;
-    // }
-    print(userController.doc.value.id);
+      isLoading.value = false;
+    } on Exception catch (e) {
+      isLoading.value = true;
+    }
   }
 
   saveNotebooksName() async {
     try {
-      await Global.doc
+      await userController.doc.value
           .collection("notebooks")
           .doc(noteBookNameController.value.text)
           .set({
@@ -89,7 +92,7 @@ class NoteController extends GetxController {
     // Get a reference to the Firestore collection
 
     // Query documents where the field array contains the specified value
-    final QuerySnapshot snapshot = await Global.doc
+    final QuerySnapshot snapshot = await userController.doc.value
         .collection("userNotes")
         .where('notebook_name', arrayContainsAny: [value]).get();
 
@@ -109,8 +112,7 @@ class NoteController extends GetxController {
   @override
   void onInit() {
     timeStatus();
-    Global.userInfo();
-    // getNoteBooks();
+
     super.onInit();
   }
 }

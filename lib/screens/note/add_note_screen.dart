@@ -33,7 +33,8 @@ class AddNoteScreen extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    var addnoteController = Get.put(AddNoteController());
+    var addnoteController = Get.find<AddNoteController>();
+    var userController = Get.find<UserController>();
 
     return Scaffold(
       extendBody: false,
@@ -183,7 +184,7 @@ class AddNoteScreen extends StatelessWidget {
                                     child: StreamBuilder(
                                         stream: FirebaseFirestore.instance
                                             .collection("user")
-                                            .doc(Global.email)
+                                            .doc(userController.email.value)
                                             .collection("userNotes")
                                             .doc(docId)
                                             .collection("image")
@@ -340,7 +341,8 @@ class AddNoteScreen extends StatelessWidget {
                               ]),
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(30),
-                              child: Image.network(Global.proPic))),
+                              child:
+                                  Image.network(userController.proPic.value))),
 
                       Text(
                         time,

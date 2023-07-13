@@ -11,6 +11,8 @@ class TopButtonBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var userController = Get.find<UserController>();
+
     double height = MediaQuery.of(context).size.height;
     return Container(
       height: height / 3,
@@ -22,7 +24,10 @@ class TopButtonBottomSheet extends StatelessWidget {
           MyContainerWithIconTxt(
               icon: "asset/other_img/trash.svg",
               ontap: () {
-                Global.doc.collection("userNotes").doc(docId).delete();
+                userController.doc.value
+                    .collection("userNotes")
+                    .doc(docId)
+                    .delete();
                 navigator!.pop();
                 navigator!.pop();
               },

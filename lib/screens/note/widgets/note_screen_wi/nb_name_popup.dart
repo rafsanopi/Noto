@@ -17,7 +17,8 @@ class NoteBookName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var noteController = Get.put(NoteController());
+    var noteController = Get.find<NoteController>();
+    var userController = Get.find<UserController>();
 
     return GetBuilder<NoteController>(builder: (controller) {
       return CupertinoAlertDialog(
@@ -71,8 +72,12 @@ class NoteBookName extends StatelessWidget {
             CupertinoDialogAction(
               onPressed: () async {
                 try {
-                  await Global.doc.collection("notebooks").doc(id).update(
-                      {"name": controller.noteBookNameController.value.text});
+                  await userController.doc.value
+                      .collection("notebooks")
+                      .doc(id)
+                      .update({
+                    "name": controller.noteBookNameController.value.text
+                  });
                 } finally {
                   noteController.noteBookNameController.value.clear();
 
@@ -86,7 +91,10 @@ class NoteBookName extends StatelessWidget {
             CupertinoDialogAction(
               onPressed: () async {
                 try {
-                  await Global.doc.collection("notebooks").doc(id).delete();
+                  await userController.doc.value
+                      .collection("notebooks")
+                      .doc(id)
+                      .delete();
                   controller.deleteDocumentWithValue(notebookName);
                 } finally {
                   noteController.noteBookNameController.value.clear();
