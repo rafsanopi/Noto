@@ -41,6 +41,7 @@ class _MyNoteBooksState extends State<MyNoteBooks>
   Widget build(BuildContext context) {
     var addNoteController = Get.find<AddNoteController>();
     var noteController = Get.find<NoteController>();
+
     return SizedBox(
         width: double.infinity,
         height: 50.h,

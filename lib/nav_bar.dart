@@ -1,4 +1,5 @@
 import 'package:chatnote/Colors/colors.dart';
+import 'package:chatnote/root%20methods/global.dart';
 import 'package:chatnote/screens/note/add_note_screen.dart';
 import 'package:chatnote/screens/note/note_screen.dart';
 import 'package:chatnote/screens/others/notifications.dart';
@@ -26,6 +27,12 @@ class _NavBarState extends State<NavBar> {
     Notifications(),
     Profile()
   ];
+
+  @override
+  void initState() {
+    Get.put(UserController(), permanent: true);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

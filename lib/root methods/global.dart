@@ -7,37 +7,32 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 class UserController extends GetxController {
-  RxString username = "".obs;
   RxString email = "".obs;
   RxString proPic = "".obs;
   Rx<DocumentReference<Map<String, dynamic>>> doc =
       Rx<DocumentReference<Map<String, dynamic>>>(
           FirebaseFirestore.instance.collection("user").doc());
 
-  userInfo() {
-    var user = FirebaseAuth.instance.currentUser;
-
+  userInfo() async {
     try {
-      username.value = user!.displayName!;
-      email.value = user.email!;
-      proPic.value = user.photoURL!;
+      var user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        proPic.value = user.photoURL!;
+        email.value = user.email!;
 
-      doc.value =
-          FirebaseFirestore.instance.collection("user").doc(email.value);
+        doc.value =
+            FirebaseFirestore.instance.collection("user").doc(email.value);
+
+        print(email.value);
+        print(doc.value);
+      }
     } catch (e) {
       print("Error: $e");
     }
   }
 
   @override
-  void onReady() {
-    userInfo();
-
-    super.onReady();
-  }
-
-  @override
-  void onInit() {
+  onInit() {
     userInfo();
     super.onInit();
   }
@@ -45,13 +40,10 @@ class UserController extends GetxController {
 
 class Global {
   static init() {
-    //Note screen controller's
+    Get.lazyPut(() => UserController(), fenix: true);
     Get.lazyPut(() => NoteController(), fenix: true);
     Get.lazyPut(() => AddNoteController(), fenix: true);
     Get.lazyPut(() => NoteGridViewController(), fenix: true);
-    //login Screen
-    Get.lazyPut(() => LogInController(), fenix: false);
-    //
-    Get.lazyPut(() => UserController(), fenix: true);
+    Get.lazyPut(() => LogInController(), fenix: true);
   }
 }

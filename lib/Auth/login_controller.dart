@@ -1,12 +1,7 @@
 import 'package:chatnote/Colors/colors.dart';
-import 'package:chatnote/root%20methods/snakbar_msg.dart';
-import 'package:chatnote/root%20methods/global.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
-import '../nav_bar.dart';
 
 class LogInController extends GetxController {
   RxBool login = false.obs;

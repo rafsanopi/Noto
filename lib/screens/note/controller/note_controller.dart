@@ -42,8 +42,9 @@ class NoteController extends GetxController {
   getNoteBooks() async {
     QuerySnapshot qn =
         await userController.doc.value.collection("notebooks").get();
-    noteBookItems.value =
-        []; // empty the list when some notebook gets deletes and show value from start
+    noteBookItems
+        .clear(); // empty the list when some notebook gets deletes and show value from start
+
     try {
       noteBookItems.add("All notes");
       for (int i = 0; i < qn.docs.length; i++) {
@@ -55,6 +56,8 @@ class NoteController extends GetxController {
     } on Exception catch (e) {
       isLoading.value = true;
     }
+
+    print(qn);
   }
 
   saveNotebooksName() async {
@@ -103,15 +106,9 @@ class NoteController extends GetxController {
   }
 
   @override
-  void onReady() {
-    getNoteBooks();
-
-    super.onReady();
-  }
-
-  @override
   void onInit() {
     timeStatus();
+    getNoteBooks();
 
     super.onInit();
   }

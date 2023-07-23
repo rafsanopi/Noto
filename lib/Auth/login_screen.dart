@@ -132,7 +132,6 @@ class _LogInScreenState extends State<LogInScreen> {
                 left = 30.w;
                 await controller.signInWithGoogle();
                 if (controller.login.value == true) {
-                  Get.put(UserController(), permanent: true);
                   Get.off(() => const NavBar());
                 }
               }

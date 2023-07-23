@@ -26,8 +26,10 @@ void main() async {
       : await Firebase.initializeApp();
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  runApp(const MyApp());
+  await ScreenUtil.ensureScreenSize();
   Global.init();
+
+  runApp(const MyApp());
 }
 
 //sdsdsdsd
@@ -37,28 +39,24 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FlutterNativeSplash.remove();
+    ScreenUtil.init(context);
     return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        cupertinoOverrideTheme: CupertinoThemeData(
-          primaryColor: Colors.white.withOpacity(.9),
-          brightness: Brightness.dark,
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          cupertinoOverrideTheme: CupertinoThemeData(
+            primaryColor: Colors.white.withOpacity(.9),
+            brightness: Brightness.dark,
+          ),
+          primarySwatch: Colors.blue,
         ),
-        primarySwatch: Colors.blue,
-      ),
-      home: ScreenUtilInit(
-        builder: (context, child) {
-          return StreamBuilder(
-              stream: FirebaseAuth.instance.authStateChanges(),
-              builder: (ctx, snapshot) {
-                if (!snapshot.hasData) {
-                  return const LogInScreen();
-                }
-                return const NavBar();
-              });
-        },
-      ),
-    );
+        home: StreamBuilder(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (ctx, snapshot) {
+              if (!snapshot.hasData) {
+                return const LogInScreen();
+              }
+              return const NavBar();
+            }));
   }
 }

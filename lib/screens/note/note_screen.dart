@@ -14,7 +14,8 @@ class Note extends GetView<NoteController> {
 
   @override
   Widget build(BuildContext context) {
-    var userController = Get.find<UserController>();
+    // var userController = Get.find<UserController>();
+    var userController = Get.put(UserController());
 
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
@@ -111,7 +112,7 @@ class Note extends GetView<NoteController> {
               //
               const MyNoteBooks(),
               //
-              //const NoteGridView()
+              const NoteGridView()
             ])));
   }
 }
