@@ -6,7 +6,7 @@ import 'package:chatnote/screens/note/controller/add_note_controller.dart';
 import 'package:chatnote/screens/note/widgets/add_note_wi/below_buttom_sheet.dart';
 import 'package:chatnote/screens/note/widgets/add_note_wi/image_view.dart';
 import 'package:chatnote/screens/note/widgets/add_note_wi/top_buttom_sheet.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:chatnote/screens/note/widgets/note_screen_wi/note_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -14,6 +14,8 @@ import 'package:get/get.dart';
 
 class AddNoteScreen extends StatelessWidget {
   final bool isupdate;
+  final List<dynamic> sharedUserGmails;
+
   final String docId;
   final String title;
   final String description;
@@ -30,6 +32,7 @@ class AddNoteScreen extends StatelessWidget {
     this.time = "",
     this.hasImage = false,
     this.pin = false,
+    this.sharedUserGmails = const [],
   });
   @override
   Widget build(BuildContext context) {
@@ -145,18 +148,20 @@ class AddNoteScreen extends StatelessWidget {
                           padding: EdgeInsets.all(10.w),
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: primaryColor,
+                              color: homeBackground,
                               boxShadow: [
                                 BoxShadow(
                                     spreadRadius: 1,
-                                    blurRadius: 10,
+                                    blurRadius: 6,
                                     offset: const Offset(0, 4),
                                     color: Colors.black.withOpacity(0.25)),
                               ]),
                           child: SvgPicture.asset(
-                            "asset/other_img/add_plus.svg",
+                            "asset/other_img/more.svg",
+                            // "asset/other_img/add_plus.svg",
+
                             colorFilter: const ColorFilter.mode(
-                              homeBackground, // Adjust the colors as needed
+                              primaryColor, // Adjust the colors as needed
                               BlendMode.srcIn,
                             ),
                           ),
@@ -182,9 +187,7 @@ class AddNoteScreen extends StatelessWidget {
                                     height: 200,
                                     width: double.infinity,
                                     child: StreamBuilder(
-                                        stream: FirebaseFirestore.instance
-                                            .collection("user")
-                                            .doc(userController.email.value)
+                                        stream: userController.noteDoc.value
                                             .collection("userNotes")
                                             .doc(docId)
                                             .collection("image")
@@ -325,24 +328,10 @@ class AddNoteScreen extends StatelessWidget {
                       //
                       //users
                       //
-                      Container(
-                          height: 40.h,
-                          width: 40.w,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: primaryColor,
-                              boxShadow: [
-                                BoxShadow(
-                                    spreadRadius: 1,
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 4),
-                                    color: Colors.black.withOpacity(0.25)),
-                              ]),
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child:
-                                  Image.network(userController.proPic.value))),
+                      SharedUserImage(
+                          height: 22.h,
+                          width: 90.w,
+                          shareMemberGmail: sharedUserGmails),
 
                       Text(
                         time,
@@ -356,18 +345,31 @@ class AddNoteScreen extends StatelessWidget {
                           showModalBottomSheet(
                               context: context,
                               builder: (builder) {
-                                return const BelowButtonBottomSheet();
+                                return BelowButtonBottomSheet(
+                                  docID: docId,
+                                );
                               });
                         },
                         child: Container(
                           height: 40.h,
                           width: 40.w,
                           alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: primaryColor,
+                              boxShadow: [
+                                BoxShadow(
+                                    spreadRadius: 1,
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                    color: Colors.black.withOpacity(0.25)),
+                              ]),
                           padding: EdgeInsets.all(5.w),
                           child: SvgPicture.asset(
-                            "asset/other_img/more.svg",
+                            // "asset/other_img/more.svg",
+                            "asset/other_img/add_plus.svg",
                             colorFilter: const ColorFilter.mode(
-                              primaryColor, // Adjust the colors as needed
+                              homeBackground, // Adjust the colors as needed
                               BlendMode.srcIn,
                             ),
                           ),

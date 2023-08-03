@@ -143,9 +143,10 @@ class NoteBottomSheet extends StatelessWidget {
               child: StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection("user")
-                .doc(userController.email.value)
+                .doc("notes")
                 .collection("notebooks")
-                .orderBy("name", descending: true)
+                .where("ownerGmail", isEqualTo: userController.userEmail.value)
+                .orderBy("time", descending: true)
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {

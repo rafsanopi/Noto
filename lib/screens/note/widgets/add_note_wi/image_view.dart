@@ -33,12 +33,6 @@ class _ImageViewState extends State<ImageView> {
   @override
   Widget build(BuildContext context) {
     int newIndex;
-    var imageCollection = FirebaseFirestore.instance
-        .collection("user")
-        .doc(userController.email.value)
-        .collection("userNotes")
-        .doc(widget.docId)
-        .collection("image");
 
     //
     return Scaffold(
@@ -60,7 +54,11 @@ class _ImageViewState extends State<ImageView> {
                 },
                 child: widget.isServerImage
                     ? StreamBuilder(
-                        stream: imageCollection.snapshots(),
+                        stream: userController.noteDoc.value
+                            .collection("userNotes")
+                            .doc(widget.docId)
+                            .collection("image")
+                            .snapshots(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -100,6 +98,10 @@ class _ImageViewState extends State<ImageView> {
                                             CrossAxisAlignment.center,
                                         children: [
                                           CachedNetworkImage(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                1.5,
                                             imageUrl: data[index]["url"],
                                             placeholder: (context, url) =>
                                                 const FlutterLogo(),
@@ -130,10 +132,7 @@ class _ImageViewState extends State<ImageView> {
                                                 onTap: () async {
                                                   if (data.length == 1) {
                                                     //if index get 0 img input from main doc will be false to hide image
-                                                    FirebaseFirestore.instance
-                                                        .collection("user")
-                                                        .doc(userController
-                                                            .email.value)
+                                                    userController.noteDoc.value
                                                         .collection("userNotes")
                                                         .doc(widget.docId)
                                                         .update({"img": false});
@@ -146,7 +145,11 @@ class _ImageViewState extends State<ImageView> {
                                                     String documentId =
                                                         data[index].id;
                                                     //
-                                                    await imageCollection
+                                                    await userController
+                                                        .noteDoc.value
+                                                        .collection("userNotes")
+                                                        .doc(widget.docId)
+                                                        .collection("image")
                                                         .doc(documentId)
                                                         .delete();
 
@@ -156,7 +159,7 @@ class _ImageViewState extends State<ImageView> {
                                                     ref
                                                         .child("noteImg")
                                                         .child(userController
-                                                            .email.value)
+                                                            .userEmail.value)
                                                         .child(widget.docId)
                                                         .child(data[index]
                                                             ["imageName"])

@@ -1,5 +1,4 @@
 import 'package:chatnote/Auth/login_screen.dart';
-import 'package:chatnote/root%20methods/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,6 +22,7 @@ class Profile extends StatelessWidget {
               onPressed: () {
                 GoogleSignIn().signOut();
                 FirebaseAuth.instance.signOut();
+                Get.off(() => const LogInScreen());
               },
               icon: const Icon(Icons.logout))
         ],

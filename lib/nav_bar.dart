@@ -1,7 +1,8 @@
 import 'package:chatnote/Colors/colors.dart';
 import 'package:chatnote/root%20methods/global.dart';
-import 'package:chatnote/screens/note/add_note_screen.dart';
-import 'package:chatnote/screens/note/note_screen.dart';
+import 'package:chatnote/screens/note/note_screens/add_note_screen.dart';
+
+import 'package:chatnote/screens/note/note_screens/note_screen.dart';
 import 'package:chatnote/screens/others/notifications.dart';
 import 'package:chatnote/screens/others/profile.dart';
 import 'package:chatnote/screens/others/todo.dart';
@@ -29,13 +30,8 @@ class _NavBarState extends State<NavBar> {
   ];
 
   @override
-  void initState() {
-    Get.put(UserController(), permanent: true);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    var userController = Get.find<UserController>();
     return Scaffold(
       extendBody: true,
       floatingActionButton: _selectedIndex == 0 || _selectedIndex == 1
@@ -43,7 +39,8 @@ class _NavBarState extends State<NavBar> {
               backgroundColor: Colors.white,
               onPressed: () {
                 if (_selectedIndex == 0) {
-                  Get.to(() => const AddNoteScreen(
+                  Get.to(() => AddNoteScreen(
+                        sharedUserGmails: [userController.userEmail.value],
                         isupdate: false,
                       ));
                 }

@@ -16,7 +16,7 @@ class AddNoteController extends GetxController {
   RxList images = [].obs;
   RxInt onPageImageIndex = 0.obs;
   var userController = Get.find<UserController>();
-
+  late List<QueryDocumentSnapshot<Map<String, dynamic>>> combinedSnapshots;
   int getImageIndex(int index) {
     return onPageImageIndex.value = index;
   }
@@ -40,13 +40,14 @@ class AddNoteController extends GetxController {
     List<String> imageNames = [];
     if (isUpdate == false) {
       try {
-        await userController.doc.value.collection("userNotes").add({
+        await userController.noteDoc.value.collection("userNotes").add({
           // Save Data to cloud firebase if its not updating
           "deleted": false,
-          "notebook_name": ["All notes", notebookName.value],
+          "notebook_name": notebookName.value,
           "pin": false,
           "share": false,
-          "share_member_gmail": [],
+          "ownerGmail": userController.userEmail.value,
+          "share_member_gmail": [userController.userEmail.value],
           "reminder": "None",
           "img": false,
           "title": titleTexteditingController.value.text == ""
@@ -64,7 +65,7 @@ class AddNoteController extends GetxController {
           imageNames.add(imageName);
           final imagesRef = storageRef
               .child("noteImg")
-              .child(userController.email.value)
+              .child(userController.userEmail.value)
               .child(docId)
               .child("$imageName.jpg");
           await imagesRef.putFile(imageFile);
@@ -77,7 +78,7 @@ class AddNoteController extends GetxController {
           var imageName = imageNames[
               i]; // Assuming the imageNames list contains the corresponding image names
 
-          await userController.doc.value
+          await userController.noteDoc.value
               .collection("userNotes")
               .doc(docId)
               .collection("image")
@@ -85,7 +86,7 @@ class AddNoteController extends GetxController {
             "url": url,
             "imageName": "$imageName.jpg",
           });
-          await userController.doc.value
+          await userController.noteDoc.value
               .collection("userNotes")
               .doc(docId)
               .update({
@@ -98,7 +99,7 @@ class AddNoteController extends GetxController {
       }
     } else if (isUpdate == true) {
       try {
-        await userController.doc.value
+        await userController.noteDoc.value
             .collection("userNotes")
             .doc(docID)
             .update({
@@ -124,7 +125,7 @@ class AddNoteController extends GetxController {
             imageNames.add(imageName);
             final imagesRef = storageRef
                 .child("noteImg")
-                .child(userController.email.value)
+                .child(userController.userEmail.value)
                 .child(docID!)
                 .child("$imageName.jpg");
             await imagesRef.putFile(imageFile);
@@ -137,7 +138,7 @@ class AddNoteController extends GetxController {
             var imageName = imageNames[
                 i]; // Assuming the imageNames list contains the corresponding image names
 
-            await userController.doc.value
+            await userController.noteDoc.value
                 .collection("userNotes")
                 .doc(docID!)
                 .collection("image")
@@ -145,7 +146,7 @@ class AddNoteController extends GetxController {
               "url": url,
               "imageName": "$imageName.jpg",
             });
-            await userController.doc.value
+            await userController.noteDoc.value
                 .collection("userNotes")
                 .doc(docID)
                 .update({

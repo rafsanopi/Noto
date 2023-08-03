@@ -1,5 +1,6 @@
 import 'package:chatnote/Auth/login_controller.dart';
 import 'package:chatnote/screens/note/controller/add_note_controller.dart';
+import 'package:chatnote/screens/note/controller/collaborate_controller.dart';
 import 'package:chatnote/screens/note/controller/note_controller.dart';
 import 'package:chatnote/screens/note/controller/note_gridview_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,9 +8,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 class UserController extends GetxController {
-  RxString email = "".obs;
-  RxString proPic = "".obs;
-  Rx<DocumentReference<Map<String, dynamic>>> doc =
+  RxString userName = "".obs;
+  RxString userEmail = "".obs;
+  RxString userProPic = "".obs;
+  RxString userUid = "".obs;
+
+  Rx<DocumentReference<Map<String, dynamic>>> noteDoc =
       Rx<DocumentReference<Map<String, dynamic>>>(
           FirebaseFirestore.instance.collection("user").doc());
 
@@ -17,17 +21,16 @@ class UserController extends GetxController {
     try {
       var user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        proPic.value = user.photoURL!;
-        email.value = user.email!;
+        userProPic.value = user.photoURL!;
+        userEmail.value = user.email!;
+        userName.value = user.displayName!;
+        userUid.value = user.uid;
 
-        doc.value =
-            FirebaseFirestore.instance.collection("user").doc(email.value);
-
-        print(email.value);
-        print(doc.value);
+        noteDoc.value =
+            FirebaseFirestore.instance.collection("user").doc("notes");
       }
     } catch (e) {
-      print("Error: $e");
+      Get.snackbar("Error", e.toString());
     }
   }
 
@@ -44,6 +47,7 @@ class Global {
     Get.lazyPut(() => NoteController(), fenix: true);
     Get.lazyPut(() => AddNoteController(), fenix: true);
     Get.lazyPut(() => NoteGridViewController(), fenix: true);
+    Get.lazyPut(() => CollaborateController(), fenix: true);
     Get.lazyPut(() => LogInController(), fenix: true);
   }
 }

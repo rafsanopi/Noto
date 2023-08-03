@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../nav_bar.dart';
 import '../root methods/global.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -132,7 +131,9 @@ class _LogInScreenState extends State<LogInScreen> {
                 left = 30.w;
                 await controller.signInWithGoogle();
                 if (controller.login.value == true) {
-                  Get.off(() => const NavBar());
+                  var userController = Get.find<UserController>();
+                  userController.userInfo();
+                  controller.saveUserInfoOnLogIn();
                 }
               }
               if (left < 30.w) {

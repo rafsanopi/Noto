@@ -24,7 +24,7 @@ class TopButtonBottomSheet extends StatelessWidget {
           MyContainerWithIconTxt(
               icon: "asset/other_img/trash.svg",
               ontap: () {
-                userController.doc.value
+                userController.noteDoc.value
                     .collection("userNotes")
                     .doc(docId)
                     .delete();

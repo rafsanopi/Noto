@@ -7,15 +7,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
-import '../../root methods/global.dart';
+import '../../../root methods/global.dart';
 
 class Note extends GetView<NoteController> {
   const Note({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // var userController = Get.find<UserController>();
-    var userController = Get.put(UserController());
+    var userController = Get.find<UserController>();
 
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
@@ -40,7 +39,7 @@ class Note extends GetView<NoteController> {
                     width: 60.w,
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(50),
-                        child: Image.network(userController.proPic.value)),
+                        child: Image.network(userController.userProPic.value)),
                   ),
                   GestureDetector(
                     onTap: () {},

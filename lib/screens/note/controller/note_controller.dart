@@ -40,8 +40,10 @@ class NoteController extends GetxController {
   }
 
   getNoteBooks() async {
-    QuerySnapshot qn =
-        await userController.doc.value.collection("notebooks").get();
+    QuerySnapshot qn = await userController.noteDoc.value
+        .collection("notebooks")
+        .where("ownerGmail", isEqualTo: userController.userEmail.value)
+        .get();
     noteBookItems
         .clear(); // empty the list when some notebook gets deletes and show value from start
 
@@ -49,23 +51,18 @@ class NoteController extends GetxController {
       noteBookItems.add("All notes");
       for (int i = 0; i < qn.docs.length; i++) {
         noteBookItems.add(qn.docs[i]["name"]);
-        print(noteBookItems);
       }
 
       isLoading.value = false;
-    } on Exception catch (e) {
+    } on Exception {
       isLoading.value = true;
     }
-
-    print(qn);
   }
 
   saveNotebooksName() async {
     try {
-      await userController.doc.value
-          .collection("notebooks")
-          .doc(noteBookNameController.value.text)
-          .set({
+      await userController.noteDoc.value.collection("notebooks").add({
+        "ownerGmail": userController.userEmail.value,
         "name": noteBookNameController.value.text.trim(),
         "time": todaysDate.value
       });
@@ -95,7 +92,7 @@ class NoteController extends GetxController {
     // Get a reference to the Firestore collection
 
     // Query documents where the field array contains the specified value
-    final QuerySnapshot snapshot = await userController.doc.value
+    final QuerySnapshot snapshot = await userController.noteDoc.value
         .collection("userNotes")
         .where('notebook_name', arrayContainsAny: [value]).get();
 

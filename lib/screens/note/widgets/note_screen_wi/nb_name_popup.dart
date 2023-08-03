@@ -72,7 +72,7 @@ class NoteBookName extends StatelessWidget {
             CupertinoDialogAction(
               onPressed: () async {
                 try {
-                  await userController.doc.value
+                  await userController.noteDoc.value
                       .collection("notebooks")
                       .doc(id)
                       .update({
@@ -91,7 +91,7 @@ class NoteBookName extends StatelessWidget {
             CupertinoDialogAction(
               onPressed: () async {
                 try {
-                  await userController.doc.value
+                  await userController.noteDoc.value
                       .collection("notebooks")
                       .doc(id)
                       .delete();
