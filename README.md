@@ -2,6 +2,8 @@
 
 ![Frame 3](https://github.com/rafsanopi/Noto/assets/45880457/75ea0da4-e850-41dd-8855-7b7f2e19559f)
 
+![Image](https://github.com/user-attachments/assets/fc2de007-0863-4f84-b50d-ccf9883cb335)
+
 Features:
 
 1. Online database.
